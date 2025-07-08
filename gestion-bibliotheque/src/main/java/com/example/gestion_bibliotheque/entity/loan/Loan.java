@@ -43,10 +43,8 @@ public class Loan {
     @Column(name = "returned")
     private boolean returned;
 
-// === Constructeurs ===
-
     public Loan() {
-        // constructeur vide requis par JPA
+       
     }
 
     public Loan(User user, BookCopy bookCopy, LocalDate startDate, LocalDate dueDate,

@@ -23,11 +23,9 @@ public class ActivityLog {
 
     private LocalDateTime timestamp;
 
-    // Constructeur vide
     public ActivityLog() {
     }
 
-    // Constructeur complet
     public ActivityLog(Long id, User user, String actionType, String description, LocalDateTime timestamp) {
         this.id = id;
         this.user = user;
@@ -43,9 +41,6 @@ public class ActivityLog {
         this.timestamp = timestamp;
     }
     
-
-    // Getters et setters
-
     public Long getId() {
         return id;
     }

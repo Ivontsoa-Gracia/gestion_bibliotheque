@@ -39,11 +39,9 @@ public class Reservation {
     @Column(nullable = false)
     private ReservationStatus status;
 
-    // Constructeur vide
     public Reservation() {
     }
 
-    // Constructeur complet
     public Reservation(Long id, User user, Book book, LocalDate reservationDate, boolean notified) {
         this.id = id;
         this.user = user;
@@ -51,8 +49,6 @@ public class Reservation {
         this.reservationDate = reservationDate;
         this.notified = notified;
     }
-
-    // Getters et setters
 
     public boolean isActive() {
         return active;

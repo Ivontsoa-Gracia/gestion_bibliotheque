@@ -7,7 +7,6 @@ public class BookCopyDTO {
     private String status;
     private Long bookId;
 
-    // Constructeurs, getters, setters
 
     public BookCopyDTO() {
     }

@@ -12,7 +12,7 @@ public class BookCopy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String code; // code unique (ex : code barre)
+    private String code; 
 
     @Enumerated(EnumType.STRING)
     private CopyStatus status;
@@ -21,19 +21,15 @@ public class BookCopy {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    // Constructeur vide
     public BookCopy() {
     }
 
-    // Constructeur complet
     public BookCopy(Long id, String code, CopyStatus status, Book book) {
         this.id = id;
         this.code = code;
         this.status = status;
         this.book = book;
     }
-
-    // Getters et setters
 
     public Long getId() {
         return id;

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
-    // aucun besoin d’ajouter findByName si tu utilises uniquement findById
+    
 }

@@ -23,13 +23,11 @@ public class BookController {
         this.bookService = bookService;
     }
 
-//    liste normal
     @GetMapping
     public List<Book> getAllBooks() {
         return bookService.getAllBooks();
     }
 
-//    liste avec les details des copies
     @GetMapping("/books/details")
     public ResponseEntity<List<BookDetailsDTO>> getBookDetails() {
         return ResponseEntity.ok(bookService.getAllBooksEnriched());

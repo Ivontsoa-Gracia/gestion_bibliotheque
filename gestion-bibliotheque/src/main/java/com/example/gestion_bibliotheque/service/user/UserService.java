@@ -3,6 +3,7 @@ package com.example.gestion_bibliotheque.service.user;
 import com.example.gestion_bibliotheque.entity.user.User;
 import java.util.List;
 import java.util.Optional;
+import com.example.gestion_bibliotheque.dto.user.UserDTO;
 
 public interface UserService {
 
@@ -27,5 +28,9 @@ public interface UserService {
     boolean existsById(Long userId);
 
     List<User> getUsersByRoleId(Long roleId);
+
+    UserDTO getDataUserById(Long id);
+
+    UserDTO mapToDTO(User user);
 
 }

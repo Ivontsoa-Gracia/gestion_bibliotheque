@@ -88,7 +88,8 @@ public class LoanServiceImpl implements LoanService {
 
     public static boolean isWeekendOrHoliday(LocalDate date ,HolidayRepository holidayRepository) {
         DayOfWeek day = date.getDayOfWeek();
-        boolean isWeekend = (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY);
+        // boolean isWeekend = (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY);
+        boolean isWeekend = (day == DayOfWeek.SUNDAY);
         boolean isHoliday = holidayRepository.existsByDate(date);
         return isWeekend || isHoliday;
     }
@@ -96,36 +97,45 @@ public class LoanServiceImpl implements LoanService {
     private Loan validateLoanRules(Long userId, Long bookId, LoanType loanType, LocalDate startDate) throws BusinessException {
         // 1. Récupérer l'utilisateur
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException("Utilisateur non trouvé"));
-
+                .orElseThrow(() -> new BusinessException("Emprunt impossible : utilisateur introuvable."));
+    
+        // 🔒 Vérifier si l'utilisateur est actif
+        if (!user.isActive()) {
+            throw new BusinessException("Emprunt refusé : l'utilisateur est inactif (abonnement expiré ou désactivé).");
+        }
+    
         // 2. Récupérer le livre
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BusinessException("Livre non trouvé"));
-
+                .orElseThrow(() -> new BusinessException("Emprunt impossible : livre introuvable."));
+    
         // 3. Chercher un exemplaire disponible
         Optional<Object> availableCopyOpt = bookCopyRepository.findByBookAndStatus(book, CopyStatus.DISPONIBLE)
                 .stream()
                 .findFirst();
-
+    
         if (availableCopyOpt.isEmpty()) {
-            throw new BusinessException("Aucun exemplaire disponible");
+            throw new BusinessException("Emprunt refusé : aucun exemplaire disponible pour ce livre.");
         }
-
+    
         BookCopy availableCopy = (BookCopy) availableCopyOpt.get();
-
-        // 4. Règles métier via LoanPolicy
+    
+        // 4. Politique de prêt
         LoanPolicy policy = loanPolicyService.findByUserRoleAndLoanType(user.getProfile(), loanType)
-                .orElseThrow(() -> new BusinessException("Politique de prêt introuvable pour ce profil"));
-
+                .orElseThrow(() -> new BusinessException("Emprunt impossible : politique de prêt introuvable pour ce profil."));
+    
+        // 5. Vérifier nombre de prêts en cours
         int currentLoans = loanRepository.countByUserAndReturnedFalse(user);
         if (currentLoans >= policy.getMaxLoans()) {
-            throw new BusinessException("Nombre maximal de prêts atteint pour ce profil");
+            throw new BusinessException("Emprunt refusé : nombre maximal de prêts atteint pour ce profil.");
         }
-        LocalDate dueDate  = DateUtils.calculateDueDate(startDate,policy);
-        while (isWeekendOrHoliday(dueDate,holidayRepository )) {
+    
+        // 6. Calcul de la date de retour (échéance)
+        LocalDate dueDate = DateUtils.calculateDueDate(startDate, policy);
+        while (isWeekendOrHoliday(dueDate, holidayRepository)) {
             dueDate = dueDate.plusDays(1);
         }
-        // 5. Créer le prêt
+    
+        // 7. Créer le prêt
         Loan loan = new Loan();
         loan.setUser(user);
         loan.setBookCopy(availableCopy);
@@ -134,22 +144,22 @@ public class LoanServiceImpl implements LoanService {
         loan.setExtended(false);
         loan.setReturnDate(null);
         loan.setLoanType(loanType);
-
-        // 6. Marquer le livre comme emprunté
+    
+        // 8. Marquer l'exemplaire comme emprunté
         availableCopy.setStatus(CopyStatus.EMPRUNTE);
         bookCopyRepository.save(availableCopy);
-
-
+    
+        // 9. Logger
         ActivityLog log = new ActivityLog(
-                loan.getUser(),
+                user,
                 "EMPRUNT",
                 "Emprunt du livre : " + availableCopy.getCode(),
                 dueDate.atStartOfDay());
-
         logRepository.save(log);
+    
         return loan;
-
     }
+    
 
     @Override
     public Loan borrowBook(Long userId, Long bookId, LoanType loanType, LocalDate start_date) throws BusinessException {
@@ -230,14 +240,6 @@ public class LoanServiceImpl implements LoanService {
         return loanRepository.save(loan);
     }
 
-    @Override
-    public Loan extendLoan(Long loanId) {
-//        boolean isReserved = reservationRepository.existsByBookAndNotifiedFalse(bookCopy.getBook());
-//        if (isReserved) {
-//            throw new BusinessException("Impossible de prolonger : le livre est réservé par un autre utilisateur.");
-//        }
-        return null;
-    }
 
     @Override
     public List<Loan> getLoans(LocalDate start_date) {
@@ -267,5 +269,28 @@ public class LoanServiceImpl implements LoanService {
                     .map(this::mapToDTO)
                     .collect(Collectors.toList());
     }
+
+    @Override
+    public List<LoanDTO> getLoansByUserId(Long userId) {
+        List<Loan> loans = loanRepository.findByUserId(userId);
+        return loans.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    private LoanDTO convertToDto(Loan loan) {
+        LoanDTO dto = new LoanDTO();
+        dto.setId(loan.getId());
+        dto.setUserId(loan.getUser().getId());
+        dto.setUserName(loan.getUser().getName());
+        dto.setBookCopyId(loan.getBookCopy().getId());
+        dto.setBookTitle(loan.getBookCopy().getBook().getTitle());
+        dto.setBookAuthor(loan.getBookCopy().getBook().getAuthor());
+        dto.setStartDate(loan.getStartDate());
+        dto.setDueDate(loan.getDueDate());
+        dto.setReturnDate(loan.getReturnDate());
+        dto.setExtended(loan.getExtended()); 
+        dto.setLoanType(loan.getLoanType());
+        return dto;
+    }
+
 
 }

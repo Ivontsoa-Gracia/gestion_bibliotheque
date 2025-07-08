@@ -20,6 +20,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.gestion_bibliotheque.entity.user.Role;
 import com.example.gestion_bibliotheque.repository.user.RoleRepository;
+import com.example.gestion_bibliotheque.dto.user.UserDTO;
+
 
 
 @RestController
@@ -44,8 +46,6 @@ public class AuthController {
         public String password;
     }
 
-    // Note : le login est géré par Spring Security (POST /api/auth/login)
-    // Tu peux laisser cette méthode vide ou la supprimer si tu utilises formLogin().loginProcessingUrl("/api/auth/login")
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
@@ -68,8 +68,8 @@ public class AuthController {
         public String email;
         public String username;
         public String password;
-        public String profile; // Ex: "BIBLIOTHECAIRE"
-        public String roleName; // Ex: "ADMIN" ou "BIBLIOTHECAIRE"
+        public String profile; 
+        public String roleName; 
     }
 
     // @PostMapping(value = "/register", consumes = {"application/json", "application/json;charset=UTF-8"})
@@ -108,14 +108,30 @@ public class AuthController {
     @GetMapping("/me/{email}")
     public ResponseEntity<?> getUserByEmail(@PathVariable String email) {
         Optional<User> userOpt = userService.getUserByEmail(email);
-    
+
         if (userOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-    
+
         User user = userOpt.get();
-        return ResponseEntity.ok(user);
+
+        UserDTO userDTO = userService.mapToDTO(user);
+
+        return ResponseEntity.ok(userDTO);
     }
+
+
+    // @GetMapping("/me/{email}")
+    // public ResponseEntity<?> getUserByEmail(@PathVariable String email) {
+    //     Optional<User> userOpt = userService.getUserByEmail(email);
+    
+    //     if (userOpt.isEmpty()) {
+    //         return ResponseEntity.notFound().build();
+    //     }
+    
+    //     User user = userOpt.get();
+    //     return ResponseEntity.ok(user);
+    // }
     
     
 }

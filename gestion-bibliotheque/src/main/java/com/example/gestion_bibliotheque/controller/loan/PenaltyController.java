@@ -24,6 +24,7 @@ public class PenaltyController {
         this.penaltyService = penaltyService;
         this.userService = userService;
     }
+
     @PostMapping
     public ResponseEntity<List<PenaltyDTO>> getUserPenalties(@RequestParam Long userId) throws BusinessException {
         Optional<User> userOpt = userService.getUserById(userId);

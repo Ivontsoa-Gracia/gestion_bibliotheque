@@ -64,7 +64,7 @@ public class BookCopyServiceImpl implements BookCopyService {
 
     @Override
     public BookCopy getCopyById(Long id) {
-        // Exemple basique, adapte selon ton besoin réel
+       
         return bookCopyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Copie introuvable"));
     }

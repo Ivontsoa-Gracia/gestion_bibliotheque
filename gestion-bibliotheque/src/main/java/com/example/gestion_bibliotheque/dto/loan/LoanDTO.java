@@ -19,8 +19,6 @@ public class LoanDTO {
     private boolean returned;
     private LoanType loanType;
 
-    // Getters & Setters
-
     public Long getId() {
         return id;
     }

@@ -10,7 +10,6 @@ public class BorrowRequest {
     private LoanType loanType;
     private LocalDate startDate;
 
-    // Getters / Setters
     public Long getUserId() {
         return userId;
     }

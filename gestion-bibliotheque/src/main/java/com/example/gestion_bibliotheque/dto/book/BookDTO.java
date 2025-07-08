@@ -8,8 +8,6 @@ public class BookDTO {
     private Long categoryId;
     private Long languageId;
 
-    // Constructeurs, getters, setters
-
     public BookDTO( String title, String author, String isbn, Long categoryId, Long languageId) {
         this.title = title;
         this.author = author;

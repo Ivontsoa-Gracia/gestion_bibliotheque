@@ -16,13 +16,14 @@ public interface  LoanService {
 
     Loan returnBook(Long loanId,LocalDate returnDate) throws BusinessException;
 
-    Loan extendLoan(Long loanId);
-
     List<Loan> getLoans(LocalDate start_date);
     List<Loan> getLoans(LocalDate start_date, LocalDate end_date);
     List<Loan> getLoans(LocalDate start_date, LocalDate end_date, LoanType loanType);
     // List<Loan> getLoans();
 
     List<LoanDTO> getLoans();
+
+    List<LoanDTO> getLoansByUserId(Long userId); 
+
 
 }

@@ -9,7 +9,6 @@ import java.util.List;
 public interface HolidayRepository extends JpaRepository<Holiday, Long> {
     Optional<Holiday> findByDate(LocalDate date);
 
-    // Trouver tous les jours fériés dans une plage de dates
     List<Holiday> findByDateBetween(LocalDate start, LocalDate end);
 
     boolean existsByDate(LocalDate date);

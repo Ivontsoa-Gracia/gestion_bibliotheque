@@ -11,7 +11,6 @@ public class PenaltyDTO {
     private String reason;
     private boolean active;
 
-    // Constructeurs, getters, setters
     public static PenaltyDTO fromEntity(Penalty penalty) {
         PenaltyDTO dto = new PenaltyDTO();
         dto.setId(penalty.getId());

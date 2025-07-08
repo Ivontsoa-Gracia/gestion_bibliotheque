@@ -12,7 +12,6 @@ public class BookDetailsDTO {
     private int totalCopies;
     private Map<String, Integer> statusCount;
 
-    // Getters, setters, constructeur
     public BookDetailsDTO( String title, String author, String isbn, String category, String language, int totalCopies, Map<String, Integer> statusCount) {
         this.title = title;
         this.author = author;

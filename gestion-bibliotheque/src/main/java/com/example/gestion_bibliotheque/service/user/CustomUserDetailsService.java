@@ -11,13 +11,10 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
-//    private final PasswordEncoder passwordEncoder;
 
     public CustomUserDetailsService(UserRepository userRepository
-//            , PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
-//        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -28,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
-                .roles(user.getRole().getName())  // Assure-toi que 'role' correspond au format attendu (ex: "ADMIN")
+                .roles(user.getRole().getName())  
                 .build();
     }
 }

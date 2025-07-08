@@ -34,7 +34,6 @@ public class ReservationController {
     // }
 
 
-    //Voir toutes ses réservations
     @GetMapping("/me")
     public ResponseEntity<List<ReservationDTO>> getMyReservations(@RequestParam Long userId) throws BusinessException {
         List<Reservation> reservations = reservationService.findByUser(userId);
@@ -44,14 +43,12 @@ public class ReservationController {
         return ResponseEntity.ok(dtoList);
     }
 
-    //Annuler une réservation
     @PutMapping("/{id}/cancel")
     public ResponseEntity<Void> cancelReservation(@PathVariable Long id) {
         reservationService.cancel(id);
         return ResponseEntity.noContent().build();
     }
 
-    //Voir tous les réservations (admin)
     @GetMapping
     public ResponseEntity<List<ReservationDTO>> getAll() {
         List<ReservationDTO> dtoList = reservationService.findAll().stream()
@@ -60,7 +57,6 @@ public class ReservationController {
         return ResponseEntity.ok(dtoList);
     }
 
-    //Récupérer une réservation par ID
     @GetMapping("/{id}")
     public ResponseEntity<ReservationDTO> getById(@PathVariable Long id) {
         return reservationService.findById(id)
@@ -68,7 +64,6 @@ public class ReservationController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // === NOUVEAU: Gestion des réservations ===
 
     @PostMapping("/reserve")
     public ResponseEntity<?> createReservation(@RequestBody ReservationDTO request) {
@@ -127,7 +122,7 @@ public class ReservationController {
     }
 
     private void checkUserReservationLimit(Long userId) throws BusinessException {
-        int maxReservations = 5; // Par exemple, limite à 5 réservations actives max
+        int maxReservations = 5; 
         int currentReservations = reservationService.countActiveReservationsByUser(userId);
         if (currentReservations >= maxReservations) {
             throw new BusinessException("Limite de réservations actives atteinte.");

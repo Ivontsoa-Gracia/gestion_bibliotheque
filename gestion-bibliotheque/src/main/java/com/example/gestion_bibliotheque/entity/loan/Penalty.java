@@ -29,11 +29,9 @@ public class Penalty {
     @Column(nullable = false)
     private int days;
 
-    // Constructeur vide
     public Penalty() {
     }
 
-    // Constructeur complet
     public Penalty(Long id, User user, LocalDate startDate, LocalDate endDate, String reason) {
         this.id = id;
         this.user = user;
@@ -41,8 +39,6 @@ public class Penalty {
         this.endDate = endDate;
         this.reason = reason;
     }
-
-    // Getters et setters
 
     public boolean isActive() {
         return active;

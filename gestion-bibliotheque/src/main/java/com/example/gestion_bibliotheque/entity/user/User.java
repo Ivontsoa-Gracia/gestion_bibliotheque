@@ -7,7 +7,7 @@ import com.example.gestion_bibliotheque.entity.loan.Loan;
 import com.example.gestion_bibliotheque.entity.loan.Reservation;
 import com.example.gestion_bibliotheque.entity.loan.Penalty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "users")
@@ -33,7 +33,6 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    // Relations
     @OneToMany(mappedBy = "user")
     private List<Loan> loans;
 
@@ -43,7 +42,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Penalty> penalties;
 
-    // Constructeur vide
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Abonnement> abonnements;
+
     public User() {
     }
 
@@ -59,8 +60,6 @@ public class User {
         this.reservations = reservations;
         this.penalties = penalties;
     }
-
-// Getters et setters
 
     public Long getId() {
         return id;
@@ -140,5 +139,21 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+     /**
+     * Vérifie si l'utilisateur a au moins un abonnement actif
+     * couvrant toute la période [start, end].
+     */
+    public boolean hasActiveAbonnementBetween(LocalDate start, LocalDate end) {
+        if (abonnements == null || abonnements.isEmpty()) {
+            return false;
+        }
+        return abonnements.stream()
+                .anyMatch(abonnement ->
+                    abonnement.isStatus() && // actif
+                    (abonnement.getDateDebut() == null || !abonnement.getDateDebut().isAfter(start)) &&
+                    (abonnement.getDateFin() == null || !abonnement.getDateFin().isBefore(end))
+                );
     }
 }

@@ -7,9 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import com.example.gestion_bibliotheque.dto.user.UserDTO;
 
 @RestController
-@RequestMapping("/api/users")  // endpoint de base
+@RequestMapping("/api/users") 
 public class UserController {
 
     @Autowired
@@ -19,12 +20,16 @@ public class UserController {
         this.userService = userService;
     }
 
-    // GET /api/users : récupère la liste de tous les utilisateurs
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> userDTOs = userService.getAllUsers()
+            .stream()
+            .map(userService::mapToDTO) 
+            .toList();
+    
+        return ResponseEntity.ok(userDTOs);
     }
+    
 
     @GetMapping("/role/{roleId}")
     public ResponseEntity<List<User>> getUsersByRole(@PathVariable Long roleId) {
@@ -38,4 +43,23 @@ public class UserController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/{id}/data")
+    public ResponseEntity<UserDTO> getUserData(@PathVariable Long id) {
+        UserDTO dto = userService.getDataUserById(id);
+        return ResponseEntity.ok(dto);
+    }
+
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<Void> deactivateUser(@PathVariable Long id) {
+        userService.deactivateUser(id);
+        return ResponseEntity.noContent().build(); 
+    }
+
+    @PutMapping("/{id}/activate")
+    public ResponseEntity<Void> activateUser(@PathVariable Long id) {
+        userService.activateUser(id);
+        return ResponseEntity.ok().build();
+    }
+
 }

@@ -13,17 +13,15 @@ public class Language {
     @Column(nullable = false, unique = true)
     private String name;
 
-    // Constructeur vide
     public Language() {
     }
 
-    // Constructeur complet
+t
     public Language(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    // Getters et setters
 
     public Long getId() {
         return id;

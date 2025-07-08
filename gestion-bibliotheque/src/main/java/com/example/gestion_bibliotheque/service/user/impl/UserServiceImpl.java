@@ -5,9 +5,14 @@ import com.example.gestion_bibliotheque.repository.user.UserRepository;
 import com.example.gestion_bibliotheque.service.user.UserService;
 import org.springframework.stereotype.Service;
 import com.example.gestion_bibliotheque.enums.UserProfil;
+import com.example.gestion_bibliotheque.dto.loan.LoanDTO;
+import com.example.gestion_bibliotheque.entity.loan.Loan;
+import com.example.gestion_bibliotheque.entity.book.Book;
 
+import java.util.stream.Collectors;
 import java.util.List;
 import java.util.Optional;
+import com.example.gestion_bibliotheque.dto.user.UserDTO;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
-        user.setActive(true); // Par défaut, l’utilisateur est actif
+        user.setActive(true); 
         return userRepository.save(user);
     }
 
@@ -34,7 +39,53 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
+    private List<LoanDTO> mapLoans(List<Loan> loans) {
+        return loans.stream().map(loan -> {
+            LoanDTO dto = new LoanDTO();
+            dto.setId(loan.getId());
+            dto.setUserId(loan.getUser().getId());
+            dto.setUserName(loan.getUser().getName());
+            dto.setBookCopyId(loan.getBookCopy().getId());
+            dto.setBookTitle(loan.getBookCopy().getBook().getTitle());
+            dto.setBookAuthor(loan.getBookCopy().getBook().getAuthor());
+            dto.setStartDate(loan.getStartDate());
+            dto.setDueDate(loan.getDueDate());
+            dto.setReturnDate(loan.getReturnDate());
+            dto.setExtended(loan.getExtended()); 
+            dto.setReturned(loan.isReturned());
+            dto.setLoanType(loan.getLoanType());
+            return dto;
+        }).collect(Collectors.toList());
+    }
+    
+    public UserDTO mapToDTO(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setProfile(user.getProfile());
+        dto.setActive(user.isActive());
+        dto.setRole(user.getRole());
+        dto.setRoleName(user.getRole().getName());
+        return dto;
+    }
 
+    // public UserDTO mapToDTO(User user) {
+    //     UserDTO dto = new UserDTO();
+    //     dto.setId(user.getId());
+    //     dto.setName(user.getName());
+    //     dto.setEmail(user.getEmail());
+    //     dto.setProfile(user.getProfile());
+    //     dto.setActive(user.isActive());
+    //     dto.setRole(user.getRole());
+    //     dto.setRoleName(user.getRole().getName());
+    //     dto.setLoans(mapLoans(user.getLoans()));  
+    //     dto.setReservations(user.getReservations());
+    //     dto.setPenalties(user.getPenalties());
+    //     return dto;
+    // }
+    
+    
 
     @Override
     public User updateUser(Long id, User updatedUser) {
@@ -76,7 +127,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            // Compare mot de passe en clair (à remplacer par un hash + encoder)
+    
             if (user.getPassword().equals(password) && user.getProfile() == UserProfil.BIBLIOTHECAIRE && user.isActive()) {
                 return Optional.of(user);
             }
@@ -98,5 +149,24 @@ public class UserServiceImpl implements UserService {
     public List<User> getUsersByRoleId(Long roleId) {
         return userRepository.findByRoleId(roleId);
     }
+
+    @Override
+    public UserDTO getDataUserById(Long id) {
+        User user = userRepository.findById(id)
+                  .orElseThrow(() -> new RuntimeException("User not found"));
+    
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setProfile(user.getProfile());
+        dto.setActive(user.isActive());
+        dto.setRoleName(user.getRole().getName());
+        dto.setLoans(mapLoans(user.getLoans()));
+    
+        return dto;
+    }
+    
+
 
 }

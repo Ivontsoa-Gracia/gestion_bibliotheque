@@ -1,6 +1,8 @@
 package com.example.gestion_bibliotheque.exception;
 
-public class BusinessException extends Throwable {
-    public BusinessException(String limiteDePrêtsAtteinte) {
+public class BusinessException extends RuntimeException {
+
+    public BusinessException(String message) {
+        super(message);
     }
 }

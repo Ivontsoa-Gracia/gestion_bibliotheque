@@ -38,11 +38,12 @@ public class LoanPolicy {
     @Column(nullable = false)
     private int penaltyDaysPerLateDay;
 
-    // Constructeur vide
+    @Column(nullable = false)
+    private int maxReservation;
+
     public LoanPolicy() {
     }
 
-    // Constructeur complet
     public LoanPolicy(Long id, UserProfil userProfil, LoanType loanType, int maxLoans, int loanDurationDays,
                       int maxProlongations, boolean allowReservation, boolean allowProlongation, int penaltyDaysPerLateDay) {
         this.id = id;
@@ -56,7 +57,6 @@ public class LoanPolicy {
         this.penaltyDaysPerLateDay = penaltyDaysPerLateDay;
     }
 
-    // Getters et setters
 
     public Long getId() {
         return id;
@@ -129,4 +129,13 @@ public class LoanPolicy {
     public void setUserProfil(UserProfil userProfil) {
         this.userProfil = userProfil;
     }
+
+    public int getMaxReservation() {
+        return maxReservation;
+    }
+
+    public void setMaxReservation(int maxReservation) {
+        this.maxReservation = maxReservation;
+    }
+
 }

@@ -15,18 +15,14 @@ public class Holiday {
 
     private String name;
 
-    // Constructeur vide
     public Holiday() {
     }
 
-    // Constructeur complet
     public Holiday(Long id, LocalDate date, String name) {
         this.id = id;
         this.date = date;
         this.name = name;
     }
-
-    // Getters et setters
 
     public Long getId() {
         return id;

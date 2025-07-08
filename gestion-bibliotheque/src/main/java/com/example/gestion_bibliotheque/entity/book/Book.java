@@ -32,11 +32,9 @@ public class Book {
     @JsonIgnore
     private List<BookCopy> copies;
 
-    // Constructeur vide
     public Book() {
     }
 
-    // Constructeur complet (sans la liste copies pour éviter surcharge)
     public Book(Long id, String title, String author, String isbn, BookCategory category, Language language) {
         this.id = id;
         this.title = title;
@@ -55,7 +53,6 @@ public class Book {
         this.copies = new ArrayList<>();
     }
 
-    // Getters et setters
 
     public Long getId() {
         return id;

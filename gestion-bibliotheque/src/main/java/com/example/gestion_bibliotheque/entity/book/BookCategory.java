@@ -13,17 +13,13 @@ public class BookCategory {
     @Column(nullable = false, unique = true)
     private String name;
 
-    // Constructeur vide
     public BookCategory() {
     }
 
-    // Constructeur complet
     public BookCategory(Long id, String name) {
         this.id = id;
         this.name = name;
     }
-
-    // Getters et setters
 
     public Long getId() {
         return id;

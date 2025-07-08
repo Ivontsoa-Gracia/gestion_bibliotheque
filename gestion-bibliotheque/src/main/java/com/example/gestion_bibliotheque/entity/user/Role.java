@@ -7,13 +7,12 @@ import jakarta.persistence.*;
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // correspond au SERIAL en Postgres
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  
     private Integer id;
 
     @Column(nullable = false, unique = true, length = 50)
     private String name;
 
-    // Constructeurs
     public Role() {}
 
     public Role(String name) {
@@ -23,7 +22,6 @@ public class Role {
         this.id = id;
     }
 
-    // Getters et setters
     public Integer getId() {
         return id;
     }

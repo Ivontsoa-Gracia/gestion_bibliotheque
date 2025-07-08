@@ -142,7 +142,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Map<String, Object>> getAllBookCopyStats() {
-        List<Book> books = bookRepository.findAll(); // On récupère tous les livres
+        List<Book> books = bookRepository.findAll(); 
 
         List<Map<String, Object>> statsList = new ArrayList<>();
 

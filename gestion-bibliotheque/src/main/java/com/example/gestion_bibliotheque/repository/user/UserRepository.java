@@ -10,10 +10,8 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
-    // Trouver tous les utilisateurs par rôle
     List<User> findByRole(UserProfil role);
 
-    // Vérifier si un utilisateur existe par email
     boolean existsByEmail(String email);
 
     List<User> findByRoleId(Long roleId);

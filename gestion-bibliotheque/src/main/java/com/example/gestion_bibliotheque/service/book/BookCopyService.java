@@ -14,7 +14,6 @@ public interface BookCopyService {
 
     void deleteCopy(Long id);
 
-        // Nouveau dans l'interface
     long countTotalCopiesByBookId(Long bookId);
 
     long countAvailableCopiesByBookId(Long bookId);
